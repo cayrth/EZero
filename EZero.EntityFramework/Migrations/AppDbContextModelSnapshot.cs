@@ -107,7 +107,7 @@ namespace EZero.EntityFrameworkCore.Migrations
                         .IsRequired()
                         .HasMaxLength(16);
 
-                    b.Property<string>("PassWordHash")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(256);
 
@@ -116,7 +116,6 @@ namespace EZero.EntityFrameworkCore.Migrations
                         .HasMaxLength(256);
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasMaxLength(16);
 
                     b.HasKey("Id");

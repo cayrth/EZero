@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using EZero.Application.Serivce;
 using EZero.Web.Models;
 using Microsoft.AspNetCore.Authorization;
+using EZero.Application.Dto.Request.Auth;
 
 namespace EZero.Web.Controllers
 {
@@ -20,8 +21,9 @@ namespace EZero.Web.Controllers
             _userAppService = userAppService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(LoginRequest request)
         {
+            var loginRequest = new LoginRequest();
             var id = _userAppService.GetUserInfo(1);
             return View();
         }

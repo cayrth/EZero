@@ -4,8 +4,10 @@ using Autofac.Core.Lifetime;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Extras.DynamicProxy;
 using EZero.Domain.Model;
+using EZero.EntityFrameworkCore;
 using EZero.EntityFrameworkCore.Repositories;
 using EZero.Infrastructure.Dependency;
+using EZero.Infrastructure.Domain.Uow;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using System;
@@ -37,6 +39,7 @@ namespace EZero.Admin.Bootstrappers.Autofac
             var builder = new ContainerBuilder();
 
             builder.RegisterInstance(Instance).As<IIocManager>().SingleInstance();
+            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 
             //所有程序集 和程序集下类型
             var deps = DependencyContext.Default;

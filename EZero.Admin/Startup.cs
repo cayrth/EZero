@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EZero.Admin.Bootstrappers.Autofac;
 using EZero.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using EZero.Admin.Bootstrappers.Autofac;
 
 namespace EZero.Admin
 {
@@ -27,19 +26,33 @@ namespace EZero.Admin
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-          
+
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("XConnection")));
 
             services.Replace(ServiceDescriptor.Transient<IControllerActivator, ServiceBasedControllerActivator>());
             services.AddMvc();
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, o =>
-             {
-                 o.LoginPath = new PathString("/Auth/Login");
-                 o.AccessDeniedPath = new PathString("/Error/Forbidden");
-             });
+            //配置authorrize
+            services.AddAuthentication(b =>
+            {
+                b.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                b.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                b.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).
+            AddCookie(b =>
+            {
+                //登陆地址
+                b.LoginPath = "/login";
+                //sid
+                b.Cookie.Name = "EZero_SessionId";
+                // b.Cookie.Domain = "shenniu.core.com";
+                b.Cookie.Path = "/";
+                b.Cookie.HttpOnly = true;
+                b.Cookie.Expiration = new TimeSpan(0, 0, 30);
+
+                b.ExpireTimeSpan = new TimeSpan(0, 0, 30);
+            });
 
             return IocManager.Instance.Initialize(services);
         }
@@ -49,17 +62,18 @@ namespace EZero.Admin
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
+                app.UseDeveloperExceptionPage();
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseStaticFiles();
 
-            app.UseAuthentication();
+            app.UseAuthentication();// 添加认证中间件 
+
+            app.UseStaticFiles();
 
             app.UseMvc(routes =>
             {

@@ -23,12 +23,12 @@ namespace EZero.Application.Serivce.Impl
 
         public int GetUserInfo(int id)
         {
-            var list = _sysuserRepository.GetAllList();
-            var user = _sysuserRepository.FirstOrDefault(id);
+            //var list = _sysuserRepository.GetAllList();
+            //var user = _sysuserRepository.FirstOrDefault(id);
 
-            var sysuserSysroles = user.SysuserSysroles;
+            //var sysuserSysroles = user.SysuserSysroles;
 
-            var user2 = _sysuserRepository.GetAllIncluding(a => a.SysuserSysroles).FirstOrDefault(a => a.Id == id);
+            //var user2 = _sysuserRepository.GetAllIncluding(a => a.SysuserSysroles).FirstOrDefault(a => a.Id == id);
 
             return id;
         }

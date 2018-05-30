@@ -10,8 +10,8 @@ namespace EZero.EntityFrameworkCore.Map.Admin
             builder.HasKey(t => t.Id);
 
             builder.Property(t => t.LoginName).IsRequired().HasMaxLength(16);
-            builder.Property(t => t.UserName).IsRequired().HasMaxLength(16);
-            builder.Property(t => t.PassWordHash).IsRequired().HasMaxLength(256);
+            builder.Property(t => t.UserName).HasMaxLength(16);
+            builder.Property(t => t.PasswordHash).IsRequired().HasMaxLength(256);
             builder.Property(t => t.Salt).IsRequired().HasMaxLength(256);
 
         }
