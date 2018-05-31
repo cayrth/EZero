@@ -8,7 +8,7 @@ using System.Text;
 
 namespace EZero.Application.Serivce
 {
-    public interface IAdminAuthAppService : ITransientDependency
+    public interface ISysAuthAppService : ITransientDependency
     {
 
         AppResult UserRegister(RegisterRequest request);

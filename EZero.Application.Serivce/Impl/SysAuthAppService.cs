@@ -10,17 +10,20 @@ using System.Text;
 using System.Linq;
 using EZero.Infrastructure.Domain.Uow;
 using EZero.Application.Dto.Model.Auth;
+using EZero.Domain.Manager;
 
 namespace EZero.Application.Serivce.Impl
 {
-    public class AdminAuthAppService : ApplicationService, IAdminAuthAppService
+    public class SysAuthAppService : ApplicationService, ISysAuthAppService
     {
         private readonly IRepository<Sysuser> _sysuser;
+        private readonly ISysAuthManager _sysAuthManager;
         private readonly IUnitOfWork _unitOfWork;
 
-        public AdminAuthAppService(IRepository<Sysuser> sysuser, IUnitOfWork unitOfWork)
+        public SysAuthAppService(IRepository<Sysuser> sysuser, ISysAuthManager sysAuthManager, IUnitOfWork unitOfWork)
         {
             _sysuser = sysuser;
+            _sysAuthManager = sysAuthManager;
             _unitOfWork = unitOfWork;
         }
 
@@ -34,7 +37,6 @@ namespace EZero.Application.Serivce.Impl
             var appResult = new AppResult();
 
             var registerName = request.RegisterName.Trim();
-
             var isExist = _sysuser.GetMany(a => a.LoginName == registerName).Any();
             if (isExist)
             {
@@ -42,15 +44,9 @@ namespace EZero.Application.Serivce.Impl
                 return appResult;
             }
 
-            var sysuser = new Sysuser(request.RegisterName, request.Password);
 
-            _sysuser.Insert(sysuser);
-
-            if (_unitOfWork.Commit() == 0)
-            {
-                appResult.Exception("用户注册失败");
-            }
-
+            _sysAuthManager.SysUserRegister(request.RegisterName, request.Password);
+     
             appResult.Done();
 
             return appResult;
